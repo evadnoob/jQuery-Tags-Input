@@ -278,21 +278,18 @@
 
                     $(data.fake_input).typeahead({
                         onselect: function(val) {
-                            $('#tags').addTag(val.name,{ focus:true,unique:(settings.unique)});
+                            $(data.real_input).addTag(val.name,{ focus:true,unique:(settings.unique)});
                         },
                         // source can be a function
                         source: function(typeahead, query) {
                             //this function receives the typeahead object and the query string
                             $.ajax({
-                                url: "/service/group/typeahead/"+query,
-                                // i'm binding the function here using CoffeeScript syntactic sugar,
-                                //  you can use for example Underscore's bind function instead.
-                                success: function (data) {
-                                    // data must be a list of either strings or objects
-                                    // data = [{'name': 'Joe', }, {'name': 'Henry'}, ...]
-                                    typeahead.process(data);
-
-                                }
+                                url: settings.typeahead + "/" + query,
+                              success: function (data) {
+                                // data must be a list of either strings or objects
+                                // data = [{'name': 'Joe', }, {'name': 'Henry'}, ...]
+                                typeahead.process(data);
+                              }
                             });
                         },
                         // if we return objects to typeahead.process we must specify the property
