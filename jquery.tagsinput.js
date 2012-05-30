@@ -273,7 +273,8 @@
                     }
                 }
                 else if (settings.typeahead != undefined) {
-                    console.log('type ahead support will go here');
+                  // requires this gist which gives bootstrap ajax server side support.
+                  //git://gist.github.com/1866577.git
                     $(data.fake_input).attr("data-provide", "typeahead");
 
                     $(data.fake_input).typeahead({
