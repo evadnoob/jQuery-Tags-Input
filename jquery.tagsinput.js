@@ -119,8 +119,8 @@
                 $.fn.tagsInput.updateTagsField(this,tagslist);
 
                 if (options.callback && tags_callbacks[id] && tags_callbacks[id]['onAddTag']) {
-                    var f = tags_callbacks[id]['onAddTag'];
-                    f.call(this, value);
+                   var f = tags_callbacks[id]['onAddTag'];
+                  options.obj ? f.call(this, options.obj): f.call(this, value);
                 }
                 if(tags_callbacks[id] && tags_callbacks[id]['onChange'])
                 {
@@ -273,29 +273,35 @@
                     }
                 }
                 else if (settings.typeahead != undefined) {
-                  // requires this gist which gives bootstrap ajax server side support.
-                  //git://gist.github.com/1866577.git
+                    // requires this gist which gives bootstrap ajax server side support.
+                    //git://gist.github.com/1866577.git
                     $(data.fake_input).attr("data-provide", "typeahead");
 
                     $(data.fake_input).typeahead({
                         onselect: function(val) {
-                            $(data.real_input).addTag(val.name,{ focus:true,unique:(settings.unique)});
+                          $(data.real_input).addTag(val[settings.typeahead.property], { focus:true,unique:(settings.unique), obj: val});
+                            if (settings.typeahead.onselect) {
+                                settings.typeahead.onselect(val);
+                            }
                         },
                         // source can be a function
                         source: function(typeahead, query) {
                             //this function receives the typeahead object and the query string
-                            $.ajax({
-                                url: settings.typeahead + "/" + query,
-                              success: function (data) {
-                                // data must be a list of either strings or objects
-                                // data = [{'name': 'Joe', }, {'name': 'Henry'}, ...]
-                                typeahead.process(data);
-                              }
-                            });
+                            console.log('query', query);
+                            if (query != '') {
+                                $.ajax({
+                                    url: settings.typeahead.url + "/" + query,
+                                    success: function (data) {
+                                        // data must be a list of either strings or objects
+                                        // data = [{'name': 'Joe', }, {'name': 'Henry'}, ...]
+                                        typeahead.process(data);
+                                    }
+                                });
+                            }
                         },
-                        // if we return objects to typeahead.process we must specify the property
-                        // that typeahead uses to look up the display value
-                        property: "name"
+                        // specify the property that typeahead uses to
+                        // look up the display value
+                        property: settings.typeahead.property
                     });
 
                 }
