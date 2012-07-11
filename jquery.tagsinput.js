@@ -287,8 +287,7 @@
                         // source can be a function
                         source: function(typeahead, query) {
                             //this function receives the typeahead object and the query string
-                            console.log('query', query);
-                            if (query != '') {
+                          if (query != '') {
                                 $.ajax({
                                     url: settings.typeahead.url + "/" + query,
                                     success: function (data) {
