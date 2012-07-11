@@ -372,7 +372,7 @@
     $.fn.tagsInput.importTags = function(obj,val) {
         $(obj).val('');
         var id = $(obj).attr('id');
-        var tags = val.split(delimiter[id]);
+        var tags = val? val.split(delimiter[id]): [];
         for (i=0; i<tags.length; i++) {
             $(obj).addTag(tags[i],{focus:false,callback:false});
         }
