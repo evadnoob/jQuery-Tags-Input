@@ -302,7 +302,7 @@
             // specify the property that typeahead uses to
             // look up the display value
             property: settings.typeahead.property,
-            items: settings.typeahead.items
+            items: settings.typeahead.items || 8
             
           });
 
