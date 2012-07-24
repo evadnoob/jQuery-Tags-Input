@@ -179,8 +179,8 @@
       interactive:true,
       defaultText:'add a tag',
       minChars:0,
-      width:'300px',
-      height:'100px',
+      //width:'300px',
+      //height:'100px',
       autocomplete: {selectFirst: false },
       'hide':true,
       'delimiter':',',
@@ -188,10 +188,21 @@
       removeWithBackspace:true,
       placeholderColor:'#666666',
       autosize: true,
-      comfortZone: 20,
+      comfortZone: 80,
       inputPadding: 6*2
     },options);
 
+
+    $('<style type="text/css">' 
+      + "div.tagsinput { border:1px solid #CCC; background: #FFF; padding:2px; overflow-y: auto; display: inline-table}"
+      + "div.tagsinput span.tag { border: 1px solid #CAD8F3;; -moz-border-radius:2px; -webkit-border-radius:2px; display: block; float: left; padding: 2px; text-decoration:none; background: #DEE7F8; margin-right: 2px; margin-bottom:1px;font-family: helvetica;  font-size:13px;}"
+      + "div.tagsinput span.tag a { font-weight: bold;; text-decoration:none; font-size: 11px; } "
+      + "div.tagsinput input { margin:0px; font-family: helvetica; font-size: 13px; border:1px solid transparent; padding:1px; background: transparent; color: #000; outline:0px;  margin-right:1px; margin-bottom:1px; }"
+      + "div.tagsinput div { display:block; float: left; }"
+      + ".tags_clear { clear: both; width: 100%; height: 0px; }"
+      +" .not_valid {background: #FBD8DB !important; color: #90111A !important;}" 
+      +'</style>').appendTo($('head'));
+    
     this.each(function() {
       if (settings.hide) {
         $(this).hide();
@@ -221,7 +232,7 @@
       var markup = '<div id="'+id+'_tagsinput" class="tagsinput"><div id="'+id+'_addTag">';
 
       if (settings.interactive) {
-        markup = markup + '<input id="'+id+'_tag" value="" data-default="'+settings.defaultText+'" />';
+        markup = markup + '<input id="'+id+'_tag" value="" placeholder="'+settings.defaultText+'" data-default="'+settings.defaultText+'" />';
       }
 
       markup = markup + '</div><div class="tags_clear"></div></div>';
@@ -229,8 +240,8 @@
       $(markup).insertAfter(this);
 
       $(data.holder).css('width',settings.width);
-      $(data.holder).css('min-height',settings.height);
-      $(data.holder).css('height','100%');
+      $(data.holder).css('min-height',settings.min_height || settings.height);
+      $(data.holder).css('height', settings.height);
 
       if ($(data.real_input).val()!='') {
         $.fn.tagsInput.importTags($(data.real_input),$(data.real_input).val());
@@ -302,8 +313,8 @@
             // specify the property that typeahead uses to
             // look up the display value
             property: settings.typeahead.property,
-            items: settings.typeahead.items || 8
-            
+            items: settings.typeahead.items || 8, 
+            up: settings.typeahead.up
           });
 
         }
