@@ -235,27 +235,30 @@
         markup = markup + '<input id="'+id+'_tag" value="" placeholder="'+settings.defaultText+'" data-default="'+settings.defaultText+'" />';
       }
 
-      markup = markup + '</div><div class="tags_clear"></div></div>';
+      markup = $(markup + '</div><div class="tags_clear"></div></div>');
 
-      $(markup).insertAfter(this);
+      markup.insertAfter(this);
+      var fake_input = markup.find(data.fake_input);
+      var holder = markup;
+      var real_input = $(this);
 
-      $(data.holder).css('width',settings.width);
-      $(data.holder).css('min-height',settings.min_height || settings.height);
-      $(data.holder).css('height', settings.height);
+      holder.css('width',settings.width);
+      holder.css('min-height',settings.min_height || settings.height);
+      holder.css('height', settings.height);
 
-      if ($(data.real_input).val()!='') {
-        $.fn.tagsInput.importTags($(data.real_input),$(data.real_input).val());
+      if (real_input.val()!='') {
+        $.fn.tagsInput.importTags(real_input, real_input.val());
       }
       if (settings.interactive) {
-        $(data.fake_input).val($(data.fake_input).attr('data-default'));
-        $(data.fake_input).css('color',settings.placeholderColor);
-        $(data.fake_input).resetAutosize(settings);
+        fake_input.val(fake_input.attr('data-default'));
+        fake_input.css('color',settings.placeholderColor);
+        fake_input.resetAutosize(settings);
 
-        $(data.holder).bind('click',data,function(event) {
+        holder.bind('click',data,function(event) {
           $(event.data.fake_input).focus();
         });
 
-        $(data.fake_input).bind('focus',data,function(event) {
+        fake_input.bind('focus',data,function(event) {
           if ($(event.data.fake_input).val()==$(event.data.fake_input).attr('data-default')) {
             $(event.data.fake_input).val('');
           }
@@ -269,15 +272,15 @@
           }
 
           if (jQuery.Autocompleter !== undefined) {
-            $(data.fake_input).autocomplete(settings.autocomplete_url, settings.autocomplete);
-            $(data.fake_input).bind('result',data,function(event,data,formatted) {
+            fake_input.autocomplete(settings.autocomplete_url, settings.autocomplete);
+            fake_input.bind('result',data,function(event,data,formatted) {
               if (data) {
                 $('#'+id).addTag(data[0] + "",{focus:true,unique:(settings.unique)});
               }
             });
           } else if (jQuery.ui.autocomplete !== undefined) {
-            $(data.fake_input).autocomplete(autocomplete_options);
-            $(data.fake_input).bind('autocompleteselect',data,function(event,ui) {
+            fake_input.autocomplete(autocomplete_options);
+            fake_input.bind('autocompleteselect',data,function(event,ui) {
               $(event.data.real_input).addTag(ui.item.value,{focus:true,unique:(settings.unique)});
               return false;
             });
@@ -286,12 +289,12 @@
         else if (settings.typeahead != undefined) {
           // requires this gist which gives bootstrap ajax server side support.
           //git://gist.github.com/1866577.git
-          $(data.fake_input).attr("data-provide", "typeahead");
+          fake_input.attr("data-provide", "typeahead");
           
           
-          $(data.fake_input).typeahead({
+          fake_input.typeahead({
             onselect: function(val) {
-              $(data.real_input).addTag(val[settings.typeahead.property], { focus:true,unique:(settings.unique), obj: val});
+              real_input.addTag(val[settings.typeahead.property], { focus:true,unique:(settings.unique), obj: val});
               if (settings.typeahead.onselect) {
                 settings.typeahead.onselect(val);
               }
@@ -321,7 +324,7 @@
         else {
           // if a user tabs out of the field, create a new tag
           // this is only available if autocomplete is not used.
-          $(data.fake_input).bind('blur',data,function(event) {
+          fake_input.bind('blur',data,function(event) {
             var d = $(this).attr('data-default');
             if ($(event.data.fake_input).val()!='' && $(event.data.fake_input).val()!=d) {
               if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) )
@@ -335,7 +338,7 @@
 
         }
         // if user types a comma, create a new tag
-        $(data.fake_input).bind('keypress',data,function(event) {
+        fake_input.bind('keypress',data,function(event) {
           if (event.which==event.data.delimiter.charCodeAt(0) || event.which==13 ) {
             event.preventDefault();
             if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) )
@@ -348,7 +351,7 @@
           }
         });
         //Delete last tag on backspace
-        data.removeWithBackspace && $(data.fake_input).bind('keydown', function(event)
+        data.removeWithBackspace && fake_input.bind('keydown', function(event)
                                                             {
                                                               if(event.keyCode == 8 && $(this).val() == '')
                                                               {
@@ -360,11 +363,11 @@
                                                                 $(this).trigger('focus');
                                                               }
                                                             });
-        $(data.fake_input).blur();
+        fake_input.blur();
 
         //Removes the not_valid class when user changes the value of the fake input
         if(data.unique) {
-          $(data.fake_input).keydown(function(event){
+          fake_input.keydown(function(event){
             if(event.keyCode == 8 || String.fromCharCode(event.which).match(/\w+|[áéíóúÁÉÍÓÚñÑ,/]+/)) {
             $(this).removeClass('not_valid');
           }
