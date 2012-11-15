@@ -177,7 +177,6 @@
   $.fn.tagsInput = function(options) {
     var settings = jQuery.extend({
       interactive:true,
-      defaultText:'add a tag',
       minChars:0,
       //width:'300px',
       //height:'100px',
@@ -232,7 +231,7 @@
       var markup = '<div id="'+id+'_tagsinput" class="tagsinput"><div id="'+id+'_addTag">';
 
       if (settings.interactive) {
-        markup = markup + '<input id="'+id+'_tag" value="" placeholder="'+settings.defaultText+'" data-default="'+settings.defaultText+'" />';
+        markup = markup + '<input id="'+id+'_tag" value=""  data-default="'+ $(this).attr('placeholder') +'" />';
       }
 
       markup = $(markup + '</div><div class="tags_clear"></div></div>');
@@ -242,7 +241,7 @@
       var holder = markup;
       var real_input = $(this);
 
-      holder.css('width',settings.width);
+      holder.css('width', settings.width || real_input.width);
       holder.css('min-height',settings.min_height || settings.height);
       holder.css('height', settings.height);
 
@@ -253,6 +252,9 @@
         fake_input.val(fake_input.attr('data-default'));
         fake_input.css('color',settings.placeholderColor);
         fake_input.resetAutosize(settings);
+        fake_input.attr('placeholder', real_input.attr('placeholder'));
+        fake_input.css('width', settings.width || real_input.width);
+        
 
         holder.bind('click',data,function(event) {
           $(event.data.fake_input).focus();
